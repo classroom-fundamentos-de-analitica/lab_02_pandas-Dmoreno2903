@@ -50,7 +50,7 @@ def pregunta_03():
     Name: _c1, dtype: int64
 
     """
-    return tbl0["_c1"].value_counts()
+    return tbl0.groupby('_c1')['_c1'].count()
 
 
 def pregunta_04():
@@ -167,11 +167,9 @@ def pregunta_10():
     3   D                  1:2:3:5:5:7
     4   E  1:1:2:3:3:4:5:5:5:6:7:8:8:9
     """
-    table = tbl0.groupby('_c1')['_c2'].apply(lambda x: list(x)).reset_index()
-    table['_c2'] = table['_c2'].apply(lambda x: sorted(x))
-    table['_c2'] = table['_c2'].apply(lambda x: ':'.join([str(e) for e in x]))
-
-    return table
+    df = tbl0.groupby('_c1')['_c2'].apply(lambda x: sorted(list(x))).reset_index()
+    df['_c2'] = df['_c2'].apply(lambda x: ':'.join([str(e) for e in x]))
+    return df
 
 
 def pregunta_11():
@@ -190,7 +188,9 @@ def pregunta_11():
     38   38      d,e
     39   39    a,d,f
     """
-    return tbl1.groupby('_c0')['_c4'].apply(lambda x: list(x)).reset_index()
+    df = tbl1.groupby('_c0')['_c4'].apply(lambda x: list(x)).reset_index()
+    df['_c4'] = df['_c4'].apply(lambda x: ','.join(sorted(x)))
+    return df
 
 
 def pregunta_12():
@@ -209,8 +209,10 @@ def pregunta_12():
     39   39                    ggg:3,hhh:8,jjj:5
     """
     tbl2_copy = tbl2.copy()
-    tbl2_copy['_c5'] = tbl2_copy['_c5a'] + ':' + tbl2_copy['_c5b'].astype(str)
-    return tbl2_copy.groupby('_c0')['_c5'].apply(lambda x: ','.join(x)).reset_index()
+    tbl2['_c5'] = tbl2['_c5a'] + ':' + tbl2['_c5b'].map(str)
+    df = tbl2.groupby('_c0')['_c5'].apply(lambda x: sorted(x)).reset_index(name='_c5')
+    df['_c5'] = df['_c5'].apply(lambda x: ','.join(x))
+    return df
 
 
 def pregunta_13():
