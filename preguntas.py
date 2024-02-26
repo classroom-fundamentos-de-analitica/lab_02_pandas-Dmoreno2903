@@ -169,6 +169,7 @@ def pregunta_10():
     """
     df = tbl0.groupby('_c1')['_c2'].apply(lambda x: sorted(list(x))).reset_index()
     df['_c2'] = df['_c2'].apply(lambda x: ':'.join([str(e) for e in x]))
+    df.set_index('_c1', inplace=True)
     return df
 
 
